@@ -33,21 +33,21 @@ async function run(){
         //this is the proper way to query.
         //after learning more about mongodb. use aggregate lookup, pipeline, match,group
 
-        app.get('/available',async (req,res)=>{
-            const date = req.query.date;
+        app.get('available',async (req,res)=>{
+            const date = req.query.date || 'May 11, 20222'
 
             //step 01: get all service
             const services= await serviceCollection.find().toArray();
 
             //step 02: get the booking the day: [{},{},{},{},{},{}]
-            const query = {date: date};
-            const bookings = await bookingCollection.find(query).toArray();
+            const query = {date:date};
+            const bookings = await bookingCollection.find(query).toArray()
             // step 03: for each service, find booking that service
            services.forEach(service =>{
                //step 4: find bookings for that service [{},{},{},{},{}]
                const serviceBookings = bookings.filter(book => book.treatment === service.name);
                //step 5: select slots for the service bookings: ['', '', '', '','']
-               const bookedSlots =serviceBookings.map(booked => booked.slot);
+               const bookedSlots =serviceBookings.map(book => book.slot);
                //step 6: select those slots that are not in bookedSlots
                const available = service.slots.filter(slot => !bookedSlots.includes(slot));
                service.slots = available;
@@ -56,12 +56,7 @@ async function run(){
         })
 
 
-        app.get('/booking', async(req, res) =>{
-            const patient = req.query.patient;
-            const query = {patient: patient};
-            const bookings = await bookingCollection.find(query).toArray();
-            res.send(bookings);
-          })
+
 
         app.post('/booking', async (req,res)=>{
             const booking = req.body;

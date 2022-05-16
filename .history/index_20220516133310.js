@@ -56,12 +56,12 @@ async function run(){
         })
 
 
-        app.get('/booking', async(req, res) =>{
+        app.get('/booking',async(req,res)=>{
+            const query = {date: date};
             const patient = req.query.patient;
-            const query = {patient: patient};
             const bookings = await bookingCollection.find(query).toArray();
-            res.send(bookings);
-          })
+            res.send(bookings)
+        })
 
         app.post('/booking', async (req,res)=>{
             const booking = req.body;
