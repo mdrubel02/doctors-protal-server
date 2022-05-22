@@ -2,7 +2,6 @@ const express = require('express');
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const cors = require('cors');
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const port = process.env.PORT||5000;
 
@@ -22,7 +21,7 @@ async function run(){
         console.log('database connect');
         const serviceCollection = client.db('doctors_protal').collection('services');
         const bookingCollection = client.db('doctors_protal').collection('bookings');
-        const userCollection = client.db('doctors_protal').collection('users');
+        const userCollection = client.db('doctors_protal').collection('user');
 
         app.get('/service', async(req,res)=>{
             const query = {};
@@ -40,8 +39,7 @@ async function run(){
                 $set:user,
             };
             const result = await userCollection.updateOne(filter, updateDoc, options);
-            const token = jwt.sign({email:email},process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
-            res.send({result,token});
+            res.send(result);
         })
         
         //this is the proper way to query.
@@ -49,6 +47,7 @@ async function run(){
 
         app.get('/available',async (req,res)=>{
             const date = req.query.date;
+
             //step 01: get all service
             const services= await serviceCollection.find().toArray();
 

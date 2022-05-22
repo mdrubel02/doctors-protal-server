@@ -40,7 +40,7 @@ async function run(){
                 $set:user,
             };
             const result = await userCollection.updateOne(filter, updateDoc, options);
-            const token = jwt.sign({email:email},process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1h'})
+            const token = jwt.sign({email:email},process.env.ACCESS_TOKEN-CECRET, {expiresIn: '1h'})
             res.send({result,token});
         })
         
@@ -49,6 +49,7 @@ async function run(){
 
         app.get('/available',async (req,res)=>{
             const date = req.query.date;
+
             //step 01: get all service
             const services= await serviceCollection.find().toArray();
 

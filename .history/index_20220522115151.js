@@ -49,6 +49,7 @@ async function run(){
 
         app.get('/available',async (req,res)=>{
             const date = req.query.date;
+
             //step 01: get all service
             const services= await serviceCollection.find().toArray();
 
